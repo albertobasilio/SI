@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useTranslation } from 'react-i18next';
 import { authService } from '../services/api';
-import { Mail, Lock, LogIn, KeyRound } from 'lucide-react';
+import { Mail, Lock, LogIn, KeyRound, Info } from 'lucide-react';
 
 const LoginPage = () => {
+    const { t } = useTranslation();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -19,7 +21,7 @@ const LoginPage = () => {
     const [recoveryLoading, setRecoveryLoading] = useState(false);
     const [recoveryMessage, setRecoveryMessage] = useState('');
 
-    const { login } = useAuth();
+    const { login, guestLogin } = useAuth();
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
@@ -31,6 +33,19 @@ const LoginPage = () => {
             navigate('/');
         } catch (err) {
             setError(err.response?.data?.message || 'Erro ao fazer login.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleGuestLogin = async () => {
+        setError('');
+        setLoading(true);
+        try {
+            await guestLogin();
+            navigate('/recipes');
+        } catch (err) {
+            setError('Erro ao entrar como visitante.');
         } finally {
             setLoading(false);
         }
@@ -90,6 +105,22 @@ const LoginPage = () => {
                     <p>Nutricionista de Geladeira Inteligente</p>
                 </div>
 
+                <div className="auth-description" style={{ 
+                    padding: '16px', 
+                    background: 'rgba(255,255,255,0.05)', 
+                    borderRadius: '12px', 
+                    marginBottom: '24px',
+                    display: 'flex',
+                    gap: '12px',
+                    alignItems: 'flex-start',
+                    border: '1px solid rgba(255,255,255,0.1)'
+                }}>
+                    <span style={{ fontSize: '24px' }}>ℹ️</span>
+                    <p style={{ fontSize: '13px', lineHeight: '1.5', margin: 0, opacity: 0.8 }}>
+                        {t('login.description')}
+                    </p>
+                </div>
+
                 {error && <div className="alert alert-error">{error}</div>}
                 {recoveryMessage && <div className="alert alert-success">{recoveryMessage}</div>}
 
@@ -137,7 +168,7 @@ const LoginPage = () => {
                             </button>
                         </form>
 
-                        <div style={{ marginTop: 12, textAlign: 'center' }}>
+                        <div style={{ marginTop: 12, textAlign: 'center', display: 'flex', flexDirection: 'column', gap: 8 }}>
                             <button
                                 type="button"
                                 className="btn btn-secondary btn-sm"
@@ -151,10 +182,27 @@ const LoginPage = () => {
                             >
                                 <KeyRound size={16} /> Esqueci senha
                             </button>
+
+                            <button
+                                type="button"
+                                className="btn btn-sm"
+                                style={{ 
+                                    background: 'rgba(52, 211, 153, 0.1)', 
+                                    color: 'var(--color-primary)',
+                                    border: '1px solid rgba(52, 211, 153, 0.2)'
+                                }}
+                                onClick={handleGuestLogin}
+                                disabled={loading}
+                            >
+                                <LogIn size={16} /> Continuar como Visitante
+                            </button>
                         </div>
 
                         <div className="auth-footer">
-                            Nao tem conta? <Link to="/register">Criar conta gratis</Link>
+                            <p>Não tem conta? <Link to="/register">Criar conta grátis</Link></p>
+                            <p style={{ marginTop: '24px', fontSize: '11px', opacity: 0.5 }}>
+                                Desenvolvido por Mr Beto (basilio.infomidia.co.mz)
+                            </p>
                         </div>
                     </>
                 ) : (
