@@ -67,11 +67,12 @@ const AdminRoute = () => {
 
 const AppRoutes = () => {
     const { user } = useAuth();
+    const isAuthenticatedUser = Boolean(user && user.role !== 'guest');
 
     return (
         <Routes>
-            <Route path="/login" element={user ? <Navigate to="/" /> : <LoginPage />} />
-            <Route path="/register" element={user ? <Navigate to="/" /> : <RegisterPage />} />
+            <Route path="/login" element={isAuthenticatedUser ? <Navigate to="/" /> : <LoginPage />} />
+            <Route path="/register" element={isAuthenticatedUser ? <Navigate to="/" /> : <RegisterPage />} />
             <Route path="/plans" element={<PlansPage />} />
             
             <Route element={<Layout />}>

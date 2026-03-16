@@ -47,6 +47,9 @@ const LoginPage = () => {
                     <span className="logo-emoji">MZ</span>
                     <h1>Sabor Inteligente</h1>
                     <p>Nutricionista de Geladeira Inteligente</p>
+                    <p style={{ marginTop: '8px', fontSize: '14px', color: '#6b7280' }}>
+                        Plataforma para sugerir receitas, gerir o plano alimentar e melhorar a sua alimentacao diaria.
+                    </p>
                 </div>
 
                 {error && (
@@ -127,3 +130,4 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
+
